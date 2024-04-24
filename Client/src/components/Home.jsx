@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from 'react'
+import {useSelector } from 'react-redux';
+import { selectUser } from '../features/user/userSlice';
+import LogoutButton from './LogoutButton';
+import './Home.css'
 
-function Home({ user }) {
+function Home() {
 
-  // react redux tool kit
-
-
+  //user from store
+  const user = useSelector(selectUser);
   const [originalUrl, setOriinalUrl] = useState("");
   const [urls, setUrls] = useState([]);
   
   useEffect(() => {
-    if (user) {
+    console.log("User object:", user);
+    if (user && user._id) {
+      console.log("User ID:", user._id);
       handleUserUrls(user._id);
     }
   }, [user]);
   
-  
-
   async function handleUserUrls(id){
     try{
     //fetch
@@ -78,13 +81,14 @@ function Home({ user }) {
   }
   }
 
-
-
   return (
     <div>
-      <div>
-        <h4>User Name: {user && user.name}</h4>
-      </div>
+      <nav className="navbar">
+        <div className="user-info">
+          <span>Welcome, {user && user.name}</span>
+        </div>
+        <LogoutButton />
+      </nav>
       <h1>URL Shortener</h1>
       <div className="container">
         <h4>Paste the URL to be shortened</h4>

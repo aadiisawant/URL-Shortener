@@ -2,16 +2,19 @@
 import React, { useState } from 'react'
 import './Login.css'
 import { Link,  useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { setUser } from '../features/user/userSlice';
 
-function Login({setUser}) {
+//removed {setUser}
+function Login() {
 
   const navigate =  useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [user, setUser] = useState({
-  //   name:"",
-  //   _id:""
-  // })
+  
+  //redux
+  const dispatch = useDispatch();
+
 async function handleUserLogin(){
 
   //fetch
@@ -30,10 +33,11 @@ async function handleUserLogin(){
   console.log(data);
   if (res.status === 200) {
     console.log(data.name);
-    setUser({
+    //redux update
+    dispatch(setUser({
       name : data.name,
       _id : data._id
-    })
+    }))
     navigate('/home');
   } 
   else if(res.status === 404){

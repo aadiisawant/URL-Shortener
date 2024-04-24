@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs')
 async function handleUserSignUp(req,res){
     const {name, email, password} = req.body;
     const hashedPass = await bcrypt.hash(password, 10); //10 is the saltRounds
-
+    try{
     await User.create({
         name,
         email,
@@ -14,7 +14,17 @@ async function handleUserSignUp(req,res){
         OriginalPass: password,
     })
     // return res.redirect("/") //2
-    return res.status(201).json({ message : "user signup is success"})
+    const user = await User.findOne({email})
+    if(user){
+        return res.status(201).send(user)
+    }else{
+        return res.status(500).json({ message : "user data not found"})
+    }
+
+    }catch(err){
+        return res.status(404).json({message : "Error creating user"})
+    }
+    
 }
 
 async function handleUserLogin(req,res){

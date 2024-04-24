@@ -2,4 +2,12 @@ task 1:
 
 http://localhost:5173/api/signup
 name , email, password
+u
 
+React Redux :
+
+1. store globally
+2. API call to fetch -> set the data to store / update data in store
+3. how to use the store data when required.
+
+-> Actions.
