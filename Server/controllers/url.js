@@ -17,13 +17,7 @@ async function handleGenerateNewShortURL(req,res){
     //for frontend
     
     return res.status(201).send(urls)
-    //For ejs templete
-    // return res.render('home',{
-    //     id : shortID,
-    //     urls: await URL.find({createdBy:req.user._id}),
 
-    // })
-    // return res.status(201).json({id : shortID})
 }
 
 async function handleGetUserUrls(req,res){

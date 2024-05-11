@@ -5,7 +5,8 @@ const staticRoute = require('./routes/staticRouter')
 const { connectToMongoDb } = require('./connection')
 const Path = require('path');
 const userRoute = require('./routes/user');
-// const { restrictToLoggedinUserOnly, checkAuth } = require('./middlewares/auth');
+const { authenticateToken } = require('./middlewares/jwtAuth');
+const cors = require('cors');
 
 
 const app = express();
@@ -16,13 +17,16 @@ app.set("views", Path.resolve('./views'))
 
 connectToMongoDb('mongodb://127.0.0.1:27017/short-url').then(() => console.log("MongoDb connected..."))
 
+// app.use(cors({"*"}))
+app.use(cors({
+    origin: "*"
+  }));
 app.use(express.json())
 app.use(express.urlencoded({extended : false}))
 app.use(cookieParser())
 
-app.use("/", staticRoute) //checkAuth -> removed
-app.use('/api/user',userRoute) // 1
-app.use("/api/url",urlRoute) //restrictToLoggedinUserOnly,
+app.use('/api/user',userRoute)
+app.use("/api/url",authenticateToken,urlRoute)
 
 app.get('/api/info',(req,res)=>{
     const userData = {

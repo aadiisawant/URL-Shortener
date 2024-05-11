@@ -29,18 +29,21 @@ async function handleUserLogin(){
   // .then((resp) => { return resp.json()})
 
   const data = await res.json();
-
+  //jwt update
+  const user = data.user;
   console.log(data);
   if (res.status === 200) {
-    console.log(data.name);
+    console.log(user.name); //jwt
+    localStorage.setItem("token", data.token)
     //redux update
     dispatch(setUser({
-      name : data.name,
-      _id : data._id
+      name : user.name, //jwt
+      _id : user._id
     }))
     navigate('/home');
   } 
   else if(res.status === 404){
+    alert(data.message)
     console.log(data.message);
   }
   else {
@@ -48,15 +51,7 @@ async function handleUserLogin(){
     console.log("Error : Internal Server Error");
   }
 
-  //axios //Error is shown with axios
-    // const response = await axios.post('/api/user/login',{
-    //   email,
-    //   password,
-    // })
-    // console.log(response.message);
-  //   console.log("Error :",response.data.message);
-  //   // response { userId : xyz}
-  }
+}
 
 
   return (

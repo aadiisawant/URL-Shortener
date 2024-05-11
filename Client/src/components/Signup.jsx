@@ -41,6 +41,7 @@ function Signup() {
           name : res.data.name,
           _id : res.data._id
         }))
+        alert("User Registration is successful.")
         navigate('/home');
       } 
       else if(res.status === 404){

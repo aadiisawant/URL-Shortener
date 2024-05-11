@@ -10,7 +10,8 @@ function Home() {
   const user = useSelector(selectUser);
   const [originalUrl, setOriinalUrl] = useState("");
   const [urls, setUrls] = useState([]);
-  
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
     console.log("User object:", user);
     if (user && user._id) {
@@ -23,7 +24,12 @@ function Home() {
     try{
     //fetch
     console.log("IN home handleuserurls block");
-    const res = await fetch(`/api/url/${id}`)
+    const res = await fetch(`/api/url/${id}`,{
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+    })
  
     const data = await res.json();
   
@@ -48,7 +54,6 @@ function Home() {
     handleUserUrls(user._id);
   }, [user])
 
-  // const userObjId = user._id;
 
   async function handleCreateShortUrl(event){
     event.preventDefault();
@@ -58,6 +63,7 @@ function Home() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({url:originalUrl , id:user._id})
     })
@@ -69,7 +75,13 @@ function Home() {
     }
     else if(res.status === 201){
       //Updated list of urls after creation of new shortUrl
-      const updatedUrlsRes = await fetch(`/api/url/${user._id}`)
+      const updatedUrlsRes = await fetch(`/api/url/${user._id}`,{
+        method: 'GET',
+        headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+      })
       const updatedUrlsData = await updatedUrlsRes.json();
       console.log("Data from updated list:",updatedUrlsData);
       setUrls(updatedUrlsData)
@@ -81,6 +93,34 @@ function Home() {
   }
   }
 
+  async function handleRedirectURL(shortID) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('Token not found.');
+      return;
+    }
+  
+    try {
+      //have to allow cors 
+      const response = await fetch(`/api/url/redirect/${shortID}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'Access-Control-Allow-Origin':"*"
+        }
+      });
+  
+      if (response.ok) {
+        // If the response is successful, the page should redirect automatically
+        console.log('Redirected successfully.');
+      } else {
+        console.error('Failed to redirect:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error during redirection:', error);
+    }
+  }
+  
   return (
     <div>
       <nav className="navbar">
@@ -105,8 +145,9 @@ function Home() {
         <tr>
           <th>S. No</th>
           <th>ShortID</th>
-          <th>Redirect</th>
+          <th>Redirect-URL</th>
           <th>Clicks</th>
+          <th>Redirect</th>
         </tr>
       </thead>
       <tbody>
@@ -116,6 +157,10 @@ function Home() {
             <td>{url.shortID}</td>
             <td>{url.redirectURL}</td>
             <td>{url.vistHistory.length}</td>
+            <td>
+              {/* <a href="http://"></a> */}
+              <button onClick={() => handleRedirectURL(url.shortID)}>Redirect</button>
+            </td>
           </tr>
         ))}
       </tbody>

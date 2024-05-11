@@ -4,13 +4,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Signup from './components/Signup'
 import Login from './components/Login'
 import Home from './components/Home'
-// import { useState } from 'react';
+import PrivateRoute from './components/PrivateRoute';
+import './App.css'
 
 function App() {
 
-  // const [user, setUser] = useState({})
-  // setUser={setUser} login/signup
-  //user={user} home
   return (
     <>
       <Router>
@@ -18,7 +16,11 @@ function App() {
         <Route path='/' element={<Login />} />
         <Route path='/login' element={<Login  />} />
         <Route path='/signup' element={<Signup />} />
-        <Route path='/home' element={<Home />} />
+        <Route path='/home' element={
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        } />
         </Routes>
       </Router>
 

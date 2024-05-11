@@ -1,4 +1,3 @@
-// src/components/LogoutButton.jsx
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { clearUser } from '../features/user/userSlice';
@@ -10,12 +9,11 @@ function LogoutButton() {
 
   const handleLogout = () => {
     // Perform logout logic
-    // localStorage.removeItem('user');
+    localStorage.removeItem('token');
     dispatch(clearUser());
     console.log("User data is clear.");
     navigate('/login')
   };
-
   return (
     <div className='logout-btn'>
       <button type="submit" onClick={handleLogout}>Logout</button>
